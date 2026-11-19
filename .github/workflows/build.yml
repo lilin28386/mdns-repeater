@@ -1,0 +1,27 @@
+name: Build mdns-repeater mipsel-static
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install cross compiler
+        run: |
+          sudo apt update -y
+          sudo apt install -y gcc-mipsel-linux-gnu
+
+      - name: Compile static binary
+        run: |
+          mipsel-linux-gnu-gcc -static mdns-repeater.c -o mdns-repeater
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdns-repeater-mipsel
+          path: mdns-repeater
